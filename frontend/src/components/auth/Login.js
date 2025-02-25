@@ -35,26 +35,26 @@ const Login = () => {
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label className="form-label">Email</label>
+          <div className="forgot-form-group">
+            <label className="forgot-form-label">Email</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="form-input"
+              className="forgot-form-input"
               required
             />
           </div>
 
-          <div className="form-group">
-            <label className="form-label">Password</label>
+          <div className="forgot-form-group">
+            <label className="forgot-form-label">Password</label>
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="form-input"
+              className="forgot-form-input"
               required
             />
           </div>

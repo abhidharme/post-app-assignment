@@ -11,10 +11,12 @@ export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
 // Create a new post
 export const createPost = createAsyncThunk(
   'posts/createPost',
-  async (data, { rejectWithValue }) => {
+  async (data, { rejectWithValue, dispatch }) => {
     try {
       const response = await postApi.createPost(data);
-      return response.data;
+      // After creating the post, refetch all posts
+      await dispatch(fetchPosts()).unwrap();
+      return response.data; // Still return the created post data if needed elsewhere
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to create post');
     }
@@ -62,8 +64,9 @@ const postSlice = createSlice({
         state.error = action.error.message;
       })
       // Create Post
-      .addCase(createPost.fulfilled, (state, action) => {
-        state.posts.unshift(action.payload);
+      .addCase(createPost.fulfilled, (state) => {
+        state.loading = false; // Reset loading state
+        // No need to manually update state.posts here since fetchPosts will handle it
         toast.success('Post created successfully!');
       })
       .addCase(createPost.rejected, (state, action) => {
@@ -77,11 +80,11 @@ const postSlice = createSlice({
         if (index !== -1) {
           state.posts[index] = updatedPost; // Update the liked post
         }
-        toast.success('Post liked!');
+        // toast.success('Post liked!');
       })
       .addCase(likePost.rejected, (state, action) => {
         state.error = action.error.message;
-        toast.error('Failed to like post');
+        // toast.error('Failed to like post');
       })
       // Unlike Post
       .addCase(unLikePost.fulfilled, (state, action) => {
@@ -90,7 +93,7 @@ const postSlice = createSlice({
         if (index !== -1) {
           state.posts[index] = updatedPost; // Update the unliked post
         }
-        toast.success('Post unliked!');
+        // toast.success('Post unliked!');
       })
       .addCase(unLikePost.rejected, (state, action) => {
         state.error = action.error.message;

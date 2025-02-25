@@ -32,13 +32,13 @@ const ForgotPassword = () => {
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label className="form-label">Email</label>
+          <div className="forgot-form-group">
+            <label className="forgot-form-label">Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="form-input"
+              className="forgot-form-input"
               required
             />
           </div>

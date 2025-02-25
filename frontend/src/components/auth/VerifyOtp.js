@@ -42,24 +42,24 @@ const VerifyOtp = () => {
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label className="form-label">Enter OTP</label>
+          <div className="forgot-form-group">
+            <label className="forgot-form-label">Enter OTP</label>
             <input
               type="text"
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
-              className="form-input"
+              className="forgot-form-input"
               required
             />
           </div>
 
-          <div className="form-group">
-            <label className="form-label">New Password</label>
+          <div className="forgot-form-group">
+            <label className="forgot-form-label">New Password</label>
             <input
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="form-input"
+              className="forgot-form-input"
               required
             />
           </div>
