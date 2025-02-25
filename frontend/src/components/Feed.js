@@ -107,13 +107,6 @@ const Feed = () => {
 
                   <div className={`post-content ${textStyle}`} style={{ fontFamily }}>
                     {post?.text}
-                    {post?.image && (
-                      <img
-                        src={`http://localhost:5000/${post.image}`}
-                        alt="Post"
-                        className="post-img"
-                      />
-                    )}
                   </div>
 
                   <div className="post-actions">
