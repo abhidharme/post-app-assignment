@@ -15,7 +15,8 @@ const Navbar = () => {
   // Check localStorage for token on initial render
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
+    let userData = localStorage.getItem('user');
+    userData = JSON.parse(userData)
     setToken(storedToken);
     setUserName(userData?.name)
   }, [user]);
