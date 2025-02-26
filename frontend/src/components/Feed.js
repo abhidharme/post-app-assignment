@@ -12,7 +12,7 @@ const Feed = () => {
 
   // Check localStorage for user data on initial render
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem("user"));
+    const userData = localStorage.getItem("user");
     setUserId(userData?.id || userData?._id); // Use '_id' if that's the key in your user object
   }, []);
 
