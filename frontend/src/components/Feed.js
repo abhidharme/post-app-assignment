@@ -8,6 +8,13 @@ const Feed = () => {
   const dispatch = useDispatch();
   const { posts, loading } = useSelector((state) => state.posts);
   const [newPost, setNewPost] = useState("");
+  const [userId, setUserId] = useState();
+
+  // Check localStorage for user data on initial render
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("user"));
+    setUserId(userData?.id || userData?._id); // Use '_id' if that's the key in your user object
+  }, []);
 
   useEffect(() => {
     dispatch(fetchPosts());
@@ -83,6 +90,10 @@ const Feed = () => {
               const randomBg = bgColors[Math.floor(Math.random() * bgColors.length)];
               const fontFamily = getRandomFont();
 
+              // Check if current user has liked or unliked the post
+              const isLikedByUser = post?.likes?.some((like) => like.user === userId);
+              const isUnlikedByUser = post?.unlikes?.some((unlike) => unlike.user === userId);
+
               return (
                 <div
                   key={post?._id}
@@ -112,20 +123,24 @@ const Feed = () => {
                   <div className="post-actions">
                     <button
                       onClick={() => handleLike(post?._id)}
-                      className={`action-btn like-btn ${post?.liked ? "liked" : ""}`}
+                      className={`action-btn like-btn ${isLikedByUser ? "liked" : ""}`}
                     >
                       <ThumbsUp
                         size={20}
-                        fill={post?.liked ? "#fff" : "none"}
-                        stroke={post?.liked ? "#fff" : "#34495e"}
+                        fill={isLikedByUser ? "#000000" : "none"} // Black fill if liked by user
+                        stroke={isLikedByUser ? "#000000" : "#34495e"} // Black stroke if liked
                       />
                       <span className="count">{post?.likes?.length || 0}</span>
                     </button>
                     <button
                       onClick={() => handleUnLike(post?._id)}
-                      className="action-btn dislike-btn"
+                      className={`action-btn dislike-btn ${isUnlikedByUser ? "unliked" : ""}`}
                     >
-                      <ThumbsDown size={20} />
+                      <ThumbsDown
+                        size={20}
+                        fill={isUnlikedByUser ? "#1a1a1a" : "none"} // Dark gray fill if unliked by user
+                        stroke={isUnlikedByUser ? "#1a1a1a" : "#34495e"} // Dark gray stroke if unliked
+                      />
                       <span className="count">{post?.unlikes?.length || 0}</span>
                     </button>
                     <button className="action-btn share-btn">

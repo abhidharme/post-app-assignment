@@ -52,7 +52,7 @@ const authSlice = createSlice({
         state.user = action.payload.user;
         state.token = action.payload.token;
         localStorage.setItem('token', action.payload.token);
-        localStorage.setItem('user', action.payload?.user?.name);
+        localStorage.setItem('user',  JSON.stringify(action.payload?.user));
         toast.success('Signup successful!');
       })
       .addCase(signup.rejected, (state, action) => {
@@ -68,7 +68,8 @@ const authSlice = createSlice({
         state.user = action.payload.user;
         state.token = action.payload.token;
         localStorage.setItem('token', action.payload.token);
-        localStorage.setItem('user', action.payload?.user?.name);
+
+        localStorage.setItem('user', JSON.stringify(action.payload?.user));
         toast.success('Login successful!');
       })
       .addCase(login.rejected, (state, action) => {

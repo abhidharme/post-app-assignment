@@ -14,9 +14,10 @@ export const createPost = createAsyncThunk(
   async (data, { rejectWithValue, dispatch }) => {
     try {
       const response = await postApi.createPost(data);
-      // After creating the post, refetch all posts
+      // Refetch all posts after creating a new post
       await dispatch(fetchPosts()).unwrap();
-      return response.data; // Still return the created post data if needed elsewhere
+      toast.success('Post created successfully!');
+      return response.data; // Still return the created post data if needed
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to create post');
     }
@@ -26,8 +27,11 @@ export const createPost = createAsyncThunk(
 // Like a post
 export const likePost = createAsyncThunk(
   'posts/likePost',
-  async (postId) => {
+  async (postId, { dispatch }) => {
     const response = await postApi.likePost(postId);
+    // Refetch all posts after liking
+    await dispatch(fetchPosts()).unwrap();
+    // toast.success('Post liked!');
     return response.data; // Expecting updated post data
   }
 );
@@ -35,8 +39,11 @@ export const likePost = createAsyncThunk(
 // Unlike a post
 export const unLikePost = createAsyncThunk(
   'posts/unLikePost',
-  async (postId) => {
+  async (postId, { dispatch }) => {
     const response = await postApi.unlikePost(postId);
+    // Refetch all posts after unliking
+    await dispatch(fetchPosts()).unwrap();
+    // toast.success('Post unliked!');
     return response.data; // Expecting updated post data
   }
 );
@@ -54,6 +61,7 @@ const postSlice = createSlice({
       // Fetch Posts
       .addCase(fetchPosts.pending, (state) => {
         state.loading = true;
+        state.error = null; // Clear any previous errors
       })
       .addCase(fetchPosts.fulfilled, (state, action) => {
         state.loading = false;
@@ -64,38 +72,44 @@ const postSlice = createSlice({
         state.error = action.error.message;
       })
       // Create Post
+      .addCase(createPost.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(createPost.fulfilled, (state) => {
-        state.loading = false; // Reset loading state
-        // No need to manually update state.posts here since fetchPosts will handle it
-        toast.success('Post created successfully!');
+        state.loading = false;
+        // No need to update state.posts manually; fetchPosts handles it
       })
       .addCase(createPost.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload;
         toast.error(action.payload);
       })
       // Like Post
-      .addCase(likePost.fulfilled, (state, action) => {
-        const updatedPost = action.payload;
-        const index = state.posts.findIndex((post) => post.id === updatedPost.id);
-        if (index !== -1) {
-          state.posts[index] = updatedPost; // Update the liked post
-        }
-        // toast.success('Post liked!');
+      .addCase(likePost.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(likePost.fulfilled, (state) => {
+        state.loading = false;
+        // No need to update state.posts manually; fetchPosts handles it
       })
       .addCase(likePost.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.error.message;
-        // toast.error('Failed to like post');
+        toast.error('Failed to like post');
       })
       // Unlike Post
-      .addCase(unLikePost.fulfilled, (state, action) => {
-        const updatedPost = action.payload;
-        const index = state.posts.findIndex((post) => post.id === updatedPost.id);
-        if (index !== -1) {
-          state.posts[index] = updatedPost; // Update the unliked post
-        }
-        // toast.success('Post unliked!');
+      .addCase(unLikePost.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(unLikePost.fulfilled, (state) => {
+        state.loading = false;
+        // No need to update state.posts manually; fetchPosts handles it
       })
       .addCase(unLikePost.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.error.message;
         toast.error('Failed to unlike post');
       });

@@ -289,3 +289,15 @@
     margin-left: 0; /* Remove extra margin on mobile */
   }
 }
+
+.like-btn.liked {
+  background-color: #e6f0ff; /* Light blue background when liked */
+}
+
+.dislike-btn.unliked {
+  background-color: #ffeee6; /* Light orange background when unliked */
+}
+
+.action-btn:hover {
+  opacity: 0.8;
+}
